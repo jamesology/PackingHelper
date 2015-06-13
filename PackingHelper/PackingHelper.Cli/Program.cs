@@ -20,7 +20,7 @@ namespace PackingHelper.Cli
                     var settingsFile = args[0];
                     log.DebugFormat("Settings File: {0}", settingsFile);
 
-                    Configuration configuration;
+                    var configuration = new Configuration();
                     if (File.Exists(settingsFile))
                     {
                         log.Debug("File Found.");
@@ -31,7 +31,12 @@ namespace PackingHelper.Cli
                         log.Debug("File Not Found.");
                     }
 
-                    //process task sets
+                    if (Directory.Exists(configuration.TaskTemplates))
+                    {
+                        log.Debug("Loading Task Templates.");
+                        //process task sets
+                    }
+
                     //write task file
                 }
                 else
