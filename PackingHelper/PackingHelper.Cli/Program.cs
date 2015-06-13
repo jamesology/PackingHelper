@@ -19,9 +19,18 @@ namespace PackingHelper.Cli
                 {
                     var settingsFile = args[0];
                     log.DebugFormat("Settings File: {0}", settingsFile);
-                    log.DebugFormat("File {0}Found", File.Exists(settingsFile) ? String.Empty : "Not ");
 
-                    //populate settings
+                    Configuration configuration;
+                    if (File.Exists(settingsFile))
+                    {
+                        log.Debug("File Found.");
+                        configuration = Configurator.Read(settingsFile, log);
+                    }
+                    else
+                    {
+                        log.Debug("File Not Found.");
+                    }
+
                     //process task sets
                     //write task file
                 }
