@@ -59,6 +59,7 @@
     <Compile Include="TaskPriority.cs" />
     <Compile Include="TaskSet.cs" />
     <Compile Include="TaskTemplate.cs" />
+    <Compile Include="TripInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

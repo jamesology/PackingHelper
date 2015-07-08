@@ -37,10 +37,11 @@ namespace PackingHelper.Cli
                     if (Directory.Exists(configuration.TaskTemplates))
                     {
                         log.Warn("TODO: Get User Entries");
+                        var tripInfo = new TripInfo(new List<string> { "packing", "epicTrip" }, DateTime.Today);
 
                         log.Debug("Loading Task Templates.");
 
-                        var tasks = TaskEngine.Process(configuration.TaskTemplates, log);
+                        var tasks = TaskEngine.Process(configuration.TaskTemplates, tripInfo, log);
 
                         foreach(var task in tasks)
                         {
@@ -71,7 +72,7 @@ namespace PackingHelper.Cli
 
     internal class TaskEngine
     {
-        public static ICollection<Task> Process(string templateFolderLocation, ILog log)
+        public static ICollection<Task> Process(string templateFolderLocation, TripInfo tripInfo, ILog log)
         {
             var result = new List<Task>();
             foreach(var taskFile in Directory.EnumerateFiles(templateFolderLocation, "*.tasks"))
@@ -96,7 +97,7 @@ namespace PackingHelper.Cli
 
                 if (include)
                 {
-                    var tasks = taskSet.Tasks.Select(x => new Task(x.Description, (TaskPriority)x.Priority, new List<string>(), DateTime.Today.AddDays(x.DayOffset)));
+                    var tasks = taskSet.Tasks.Select(x => new Task(x.Description, (TaskPriority)x.Priority, tripInfo.Tags, tripInfo.TripDate.AddDays(x.DayOffset)));
                     result.AddRange(tasks);
                 }
 
