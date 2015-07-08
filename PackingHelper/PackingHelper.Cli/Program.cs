@@ -43,12 +43,16 @@ namespace PackingHelper.Cli
 
                         var tasks = TaskEngine.Process(configuration.TaskTemplates, tripInfo, log);
 
-                        foreach(var task in tasks)
+                        var destinationPath = Path.Combine(configuration.OutputDirectory, String.Format("Tasks_{0:yyyyMMdd}.txt", DateTime.Today));
+                        log.DebugFormat("Destination: {0}", destinationPath);
+                        using (var fileStream = new StreamWriter(destinationPath, false))
                         {
-                            log.Debug(task);
+                            foreach(var task in tasks)
+                            {
+                                fileStream.WriteLine(task);
+                                log.Debug(task);
+                            }
                         }
-
-                        log.Warn("TODO: Write task file");
                     }
                     else
                     {
@@ -90,7 +94,7 @@ namespace PackingHelper.Cli
                 bool include = true;
                 if (taskSet.Optional)
                 {
-                    Console.Write("Include? (Y/N) ");
+                    Console.Write("Include {0}? (Y/N) ", taskSet.SetName);
                     var userResponse = Console.ReadLine().ToLower();
                     include = (userResponse.IndexOf('y') == 0);
                 }
