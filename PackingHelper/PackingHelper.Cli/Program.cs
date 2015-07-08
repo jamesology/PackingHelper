@@ -33,11 +33,13 @@ namespace PackingHelper.Cli
 
                     if (Directory.Exists(configuration.TaskTemplates))
                     {
+                        log.Warn("TODO: Get User Entries");
+
                         log.Debug("Loading Task Templates.");
                         //process task sets
                     }
 
-                    //write task file
+                    log.Warn("TODO: Write task file");
                 }
                 else
                 {
