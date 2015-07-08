@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using log4net;
 using log4net.Config;
+using Newtonsoft.Json;
 
 namespace PackingHelper.Cli
 {
@@ -36,10 +39,20 @@ namespace PackingHelper.Cli
                         log.Warn("TODO: Get User Entries");
 
                         log.Debug("Loading Task Templates.");
-                        //process task sets
-                    }
 
-                    log.Warn("TODO: Write task file");
+                        var tasks = TaskEngine.Process(configuration.TaskTemplates, log);
+
+                        foreach(var task in tasks)
+                        {
+                            log.Debug(task);
+                        }
+
+                        log.Warn("TODO: Write task file");
+                    }
+                    else
+                    {
+                        log.Warn("Task templates not found.");
+                    }
                 }
                 else
                 {
@@ -53,6 +66,42 @@ namespace PackingHelper.Cli
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();
+        }
+    }
+
+    internal class TaskEngine
+    {
+        public static ICollection<Task> Process(string templateFolderLocation, ILog log)
+        {
+            var result = new List<Task>();
+            foreach(var taskFile in Directory.EnumerateFiles(templateFolderLocation, "*.tasks"))
+            {
+                log.DebugFormat("Processing: {0}", taskFile);
+                var taskSet = new TaskSet();
+                using (var textReader = new StreamReader(taskFile))
+                using (var jsonReader = new JsonTextReader(textReader))
+                {
+                    var jsonSerializer = new JsonSerializer();
+                    taskSet = jsonSerializer.Deserialize<TaskSet>(jsonReader);
+                }
+
+                log.InfoFormat("Set: {0}", taskSet.SetName);
+                bool include = true;
+                if (taskSet.Optional)
+                {
+                    Console.Write("Include? (Y/N) ");
+                    var userResponse = Console.ReadLine().ToLower();
+                    include = (userResponse.IndexOf('y') == 0);
+                }
+
+                if (include)
+                {
+                    var tasks = taskSet.Tasks.Select(x => new Task(x.Description, (TaskPriority)x.Priority, new List<string>(), DateTime.Today.AddDays(x.DayOffset)));
+                    result.AddRange(tasks);
+                }
+
+            }
+            return result;
         }
     }
 }

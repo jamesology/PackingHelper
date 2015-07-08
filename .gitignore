@@ -3,6 +3,7 @@
 
 settings.json
 [Ll]og/
+TaskTemplates/
 
 # User-specific files
 *.suo
