@@ -36,8 +36,17 @@ namespace PackingHelper.Cli
 
                     if (Directory.Exists(configuration.TaskTemplates))
                     {
-                        log.Warn("TODO: Get User Entries");
-                        var tripInfo = new TripInfo(new List<string> { "packing", "epicTrip" }, DateTime.Today);
+                        Console.Write("Enter Trip Date: ");
+                        var tripDateEntry = Console.ReadLine();
+                        DateTime tripDate = DateTime.Today.AddDays(7);
+                        DateTime.TryParse(tripDateEntry, out tripDate);
+
+                        Console.Write("Enter Tags (comma separated): ");
+                        var tagsEntry = Console.ReadLine();
+                        var tags = tagsEntry.Split(',').Select(x => x.Trim()).ToList();
+                        log.DebugFormat("Tags: {0}", String.Join(",", tags));
+
+                        var tripInfo = new TripInfo(tags, tripDate);
 
                         log.Debug("Loading Task Templates.");
 
@@ -94,6 +103,7 @@ namespace PackingHelper.Cli
                 bool include = true;
                 if (taskSet.Optional)
                 {
+                    log.Warn("TODO: Move to function parameter");
                     Console.Write("Include {0}? (Y/N) ", taskSet.SetName);
                     var userResponse = Console.ReadLine().ToLower();
                     include = (userResponse.IndexOf('y') == 0);
