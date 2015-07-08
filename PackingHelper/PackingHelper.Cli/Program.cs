@@ -43,7 +43,7 @@ namespace PackingHelper.Cli
 
                         Console.Write("Enter Tags (comma separated): ");
                         var tagsEntry = Console.ReadLine();
-                        var tags = tagsEntry.Split(',').Select(x => x.Trim()).ToList();
+                        var tags = tagsEntry.Split(',').Select(x => x.Trim()).Distinct().ToList();
                         log.DebugFormat("Tags: {0}", String.Join(",", tags));
 
                         var tripInfo = new TripInfo(tags, tripDate);
